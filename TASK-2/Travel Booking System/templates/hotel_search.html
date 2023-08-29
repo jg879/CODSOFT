@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/search.css' %}">
+<link rel="stylesheet" href="{% static 'css/search2.css' %}">
+<script src="{% static 'js/hotelsearch.js' %}"></script>
+{% endblock head %}
+
+{% block content %}
+<section class="section section1">
+    <div class="query-data-div">
+        <div class="container">
+            <div class="trip-places">
+                <div class="from-div text-align-left">
+                    <div class="small-label">City</div>
+                    <div class="white">{{city}}</div>
+                </div>
+            </div>
+            <div class="v-line"></div>
+            <div class="trip-time">
+                <div class="depart-date-div">
+                    <div class="small-label">Check-in</div>
+                    <div class="white">{{check_in_date|date:"D, d M Y"}}</div>
+                </div>
+                <div class="return-date-div">
+                    <div class="small-label">Check-out</div>
+                    <div class="white">
+                        {{check_out_date|date:"D, d M Y"}}
+                    </div>
+                </div>
+            </div><div class="v-line"></div>
+            <div class="trip-class">
+                <div class="return-date-div">
+                    <div class="small-label">Rating</div>
+                    <div class="white">
+                    {% if star_rating == 0 %}
+                        Any Star
+                    {% else %}
+                        {{ star_rating }} Star
+                    {% endif %}</div>
+                </div>
+            </div>
+            <div class="v-line"></div>
+            <div class="trip-modify">
+                <form action="/hotels/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="city" value="{{city}}">
+                    <input type="hidden" name="check_in" value="{{check_in_date}}">
+                    <input type="hidden" name="check_out" value="{{check_out_date}}">
+                    <input type="hidden" name="star_rating" value="{{star_rating}}">
+                    <button class="btn btn-secondary" type="submit">Modify Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="query-result-div">
+        <div class="container">
+            <div class="row">
+                {% if hotels %}
+                    <div class="col-lg-3 filter-div">
+                        <div class="filter">
+                            <center>
+                                <h4>Filter Results</h4>
+                            </center>
+                            <div class="filter-box">
+                                <div class="filter-price">
+                                    <div class="font-weight-bold">Price</div>
+                                    <div>
+                                        <input type="range" class="form-control-range" min="{{min_price}}" max="{{max_price}}" value="{{max_price}}" oninput="filter()">
+                                        <div class="price-range-output">
+                                            <div class="initial-price-range">
+                                                <span class="currency-symbol">₹</span>
+                                                <span class="initial-price-value">{{min_price}}</span>
+                                            </div>
+                                            <div class="final-price-range">
+                                                <span class="currency-symbol">₹</span>
+                                                <span class="final-price-value"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clr-filter-div">
+                                <center>
+                                    <button class="btn-link">Reset Filters</button>
+                                </center>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 actual-result-div">
+                        {% if hotels %}
+                            <div class="sort-div" style="width: 108%;">
+                            <div class="flight-company">
+                                <div class="sort-label">Sort By:</div>
+                            </div>
+                            <div class="flight-time">
+                                <div class="flight-stops"></div>
+                                <div class="flight-destination-time sort-arrive">
+                                    Stars
+                                    <span></span>
+                                </div>
+                            </div>
+                            <div class="flight-details">
+                                Price
+                                <span><!--&#8593;--><!--&#8595;--></span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        <div id="flights_div" style="width: 105%;">
+                            {% for hotel in hotels %}
+                                <div class="each-flight-div-box show">
+                                    <div class="each-flight-div" onclick="media_click(this)">
+                                        <div class="hotel-details" style="width: 50%;">
+                                            <div class="hotel-image" >
+                                                <img src="{{ hotel.image.url }}" alt="{{ hotel.name }}" style="height: 200px; width: 200px; border-radius: 8px;"/>
+                                            </div>
+                                            <div class="hotel-info" style="padding-left: 5px; padding-right: 5px;">
+                                                <div class="hotel-name" style="font-weight: bold;font-size: 1.8em;">{{ hotel.name }}</div>
+                                                <div class="hotel-address" style="font-size: .8em;
+                                                color: rgb(97, 97, 97);"><i class="fa fa-map-marker" aria-hidden="true"></i> {{ hotel.address }}</div>
+                                            </div>
+                                        </div>
+                                        <div class="hotel-details-btn" style="
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: space-between;">
+                                            <div class="hotel-rating" style="padding-right: 52px;">
+                                                <script>
+                                                    var hotelRating = {{hotel.rating}};
+                                            
+                                                    for (var i = 1; i <= 5; i++) {
+                                                        if (i <= hotelRating) {
+                                                            document.write('<span class="fa fa-star checked" style="color: yellow;"></span>');
+                                                        } else {
+                                                            document.write('<span class="fa fa-star"></span>');
+                                                        }
+                                                    }
+                                                </script>
+                                            </div>
+                                            
+                                            
+                                            <div class="flight-price" style="padding-right: 32px; max-width: 130px;">
+                                                <h5>
+                                                    Starting @ ₹<span class="hotel-price-{{ hotel.id }}">{{ hotel.price_per_night}}</span>
+                                                    <p style="font-size: .6em; color: rgb(97, 97, 97);">for {{ days }} 
+                                                        {% if days == 1 %}night{% else %}nights{% endif %}</p>
+                                                </h5>
+                                            </div>
+                                            
+                                            
+                                            
+                                            <div class="hotel-booking">
+                                                <form action="{% url 'review_hotel' %}" method="GET">
+                                                    <input type="hidden" name="hotel_id" value="{{ hotel.id }}">
+                                                    <input type="hidden" name="check_in_date" value="{{ check_in_date }}">
+                                                    <input type="hidden" name="check_out_date" value="{{ check_out_date }}">
+                                                    <input type="hidden" name="hotel_name" value="{{ hotel.name }}">
+                                                    <button class="btn btn-primary btn-danger o-b" type="submit">
+                                                        Book Hotel
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            
+                        </div>
+                        {% else %}
+                        <div style="height: 100%; width:100%; padding: 10%;">
+                            <div style="text-align: center; margin: auto;">
+                                <svg width="4em" height="4em" viewBox="0 0 16 16" class="bi bi-exclamation-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/>
+                                </svg>
+                                <br><br>
+                                <h3>Sorry, No Hotel for this Search</h3>
+                                <p>
+                                    We cannot find any hotels for your desired search. Please modify your search criteria and try again.
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div> 
+            
+        </section> 
+        <script>
+            const days = {{ days }}; 
+        
+            document.addEventListener("DOMContentLoaded", function () {
+                {% for hotel in hotels %}
+                    const initialPricePerNight{{ hotel.id }} = parseFloat(document.querySelector(`.hotel-price-{{ hotel.id }}`).textContent);
+                    updateTotalPrice(initialPricePerNight{{ hotel.id }}, {{ hotel.id }});
+                {% endfor %}
+            });
+            
+            function updateTotalPrice(pricePerNight, hotelId) {
+                const hotelPriceSpan = document.querySelector(`.hotel-price-${hotelId}`);
+                const totalPrice = pricePerNight * days;
+                hotelPriceSpan.textContent = totalPrice.toFixed(2); 
+            }
+        
+            
+        </script>
+        
+   
+
+
+
+
+
+{% endblock %}

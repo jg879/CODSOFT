@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+    <title>Payment Processing | Flight</title>
+    <link rel="stylesheet" href="{% static 'css/payment_success.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="section section1" id="section1">
+    <div class="gif-div">
+        <img src="{% static 'images/process.gif' %}" alt="processing">
+    </div>
+    <div class="header-before">
+        Processing Payment...
+    </div>
+    <div class="below-header">
+        Please wait while we are processing your payment.
+    </div>
+</section>
+
+<section class="section section2" id="section2" style="display: none;">
+    <div class="svg-div-c">
+        <svg width="5em" height="5em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+    </div>
+    <div class="header-after">
+        Congratulations, Your flight booking is confirmed.
+    </div>
+    <div style="text-align: center; margin-top: 12px;"><a href="/hotels">Want to book hotel too?</a></div>
+    <div class="ticket-div">
+        <button class="btn btn-outline-primary" type="button" onclick="window.location.href = '/'">Go Home</button>
+    </div>
+</section>
+
+<script>
+    setTimeout(function() {
+        var section1 = document.getElementById('section1');
+        var section2 = document.getElementById('section2');
+        
+        if (section1 && section2) {
+            section1.style.display = 'none';
+            section2.style.display = 'block';
+        }
+    }, 3000);
+</script>
+
+{% endblock %}

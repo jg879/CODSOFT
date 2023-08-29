@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head %}
+    <script type="text/javascript" src="{% static 'js/hotelscript.js' %}"></script>
+{% endblock head %}
+
+{% block content %}
+
+<section class="section first-section" style="background-image: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url('{% static 'images/Hotel_Background.jpg'%}');">
+    <div class="banner-div">
+        <div class="banner">
+        <h1 class="banner-text">Book Your Perfect</h1>
+        <h1 class="banner-text">Hotel Stay</h1>
+        </div>
+    </div>
+    <div class="search-flight">
+        <div class="container">
+            <form class="search-hotel-form" action="{% url 'search_hotel' %}" method="GET">
+                <div class="search-hotel-form-data">
+                    <div class="input-row"style="margin: 10px 0px">
+                        <label for="hotel-city">City: </label>
+                        <input type="text" name="city" placeholder="Enter a city" id="hotel-city" class="form-control mr-sm-3" onfocus="showCitiesList(this)" onblur="hideCitiesList(this)">
+                        <div id="city-list" class="places_box">
+                            <div class="each_city_list places__list" data-value="new delhi" onclick="selectCity(this)">New Delhi</div>
+                            <div class="each_city_list places__list" data-value="mumbai" onclick="selectCity(this)">Mumbai</div>
+                            <div class="each_city_list places__list" data-value="jaipur" onclick="selectCity(this)">Jaipur</div>
+                            <div class="each_city_list places__list" data-value="goa" onclick="selectCity(this)">Goa</div>
+                            <div class="each_city_list places__list" data-value="assam" onclick="selectCity(this)">Assam</div>
+                        </div>
+                    </div>
+                    <div class="input-row"style="margin: 10px 0px">
+                        <label for="check-in-date">Check-in: </label>
+                        <input type="date" name="check_in" id="check-in-date" placeholder="Check-in" class="form-control mr-sm-3">
+                    </div>
+                    <div class="input-row"style="margin: 10px 0px">
+                        <label for="check-out-date">Check-out: </label>
+                        <input type="date" name="check_out" id="check-out-date" placeholder="Check-out" class="form-control mr-sm-3">
+                    </div>
+                    <div class="input-row"style="margin: 10px 0px">
+                        <label for="star-rating">Star Rating: </label>
+                        <select name="star_rating" id="star-rating" class="form-control mr-sm-3">
+                            <option value="0">Any</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+                    </div>
+                    <div class="input-row"style="margin: 10px 0px">
+                        <button type="submit" class="btn btn-primary">Search Hotels</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    
+
+</section>
+
+{% endblock %}
