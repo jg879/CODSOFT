@@ -139,8 +139,7 @@
                                                     }
                                                 </script>
                                             </div>
-                                            
-                                            
+                                             
                                             <div class="flight-price" style="padding-right: 32px; max-width: 130px;">
                                                 <h5>
                                                     Starting @ ₹<span class="hotel-price-{{ hotel.id }}">{{ hotel.price_per_night}}</span>
@@ -148,19 +147,16 @@
                                                         {% if days == 1 %}night{% else %}nights{% endif %}</p>
                                                 </h5>
                                             </div>
-                                            
-                                            
-                                            
+                                             
                                             <div class="hotel-booking">
                                                 <form action="{% url 'review_hotel' %}" method="GET">
                                                     <input type="hidden" name="hotel_id" value="{{ hotel.id }}">
-                                                    <input type="hidden" name="check_in_date" value="{{ check_in_date }}">
-                                                    <input type="hidden" name="check_out_date" value="{{ check_out_date }}">
+                                                    <input type="hidden" name="check_in_date" value="{{ check_in_date|date:"F d, Y" }}">
+                                                    <input type="hidden" name="check_out_date" value="{{ check_out_date|date:"F d, Y" }}">
                                                     <input type="hidden" name="hotel_name" value="{{ hotel.name }}">
-                                                    <button class="btn btn-primary btn-danger o-b" type="submit">
-                                                        Book Hotel
-                                                    </button>
+                                                    <button class="btn btn-primary btn-danger o-b" type="submit">Book Hotel</button>
                                                 </form>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -186,8 +182,7 @@
                         {% endif %}
                     </div>
                 </div>
-            </div> 
-            
+            </div>     
         </section> 
         <script>
             const days = {{ days }}; 
@@ -205,13 +200,6 @@
                 hotelPriceSpan.textContent = totalPrice.toFixed(2); 
             }
         
-            
         </script>
-        
-   
-
-
-
-
 
 {% endblock %}
