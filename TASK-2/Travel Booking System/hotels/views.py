@@ -22,6 +22,8 @@ def search_hotels(request):
 
     check_in_date = datetime.strptime(check_in_date, "%Y-%m-%d")
     check_out_date = datetime.strptime(check_out_date, "%Y-%m-%d")
+    print(check_in_date)
+    print(check_out_date)
 
     hotels = Hotel.objects.filter(city__iexact=city, rating__gte=star_rating)
     number_of_days = (check_out_date - check_in_date).days
@@ -32,6 +34,7 @@ def search_hotels(request):
         max_price = 0
         min_price = 0
 
+    
     return render(request, "hotel_search.html", {
         'hotels': hotels,
         'city': city,
@@ -46,28 +49,26 @@ def search_hotels(request):
 
 def review_hotel(request):
     hotel_name = request.GET.get('hotel_name')
-    hotel = Hotel.objects.get(name = hotel_name)
+    hotel = Hotel.objects.get(name=hotel_name)
     rooms = Room.objects.filter(hotel__name__iexact=hotel_name)
     check_in_str = request.GET.get('check_in_date')
     check_out_str = request.GET.get('check_out_date')
     
-    
+    # Correct the date format to match the input
     check_in_str = check_in_str.replace(', midnight', '').strip()
     check_out_str = check_out_str.replace(', midnight', '').strip()
     
-    check_in_str = check_in_str.replace('Sept.', 'Sep.')
-    check_out_str = check_out_str.replace('Sept.', 'Sep.')
-
-    check_in_date = datetime.strptime(check_in_str, "%b. %d, %Y").date()
-    check_out_date = datetime.strptime(check_out_str, "%b. %d, %Y").date()
+    check_in_date = datetime.strptime(check_in_str, "%B %d, %Y").date()
+    check_out_date = datetime.strptime(check_out_str, "%B %d, %Y").date()
+    
     for room in rooms:
         room.check_in_date = check_in_date
         room.check_out_date = check_out_date
         room.save()
     
-    return render(request,'bookhotel.html',{
-        'rooms':rooms,
-        'hotel':hotel,
+    return render(request, 'bookhotel.html', {
+        'rooms': rooms,
+        'hotel': hotel,
     })
 
     
@@ -82,13 +83,10 @@ def hotel_payment(request):
     
     check_in_str = check_in_str.replace(', midnight', '').strip()
     check_out_str = check_out_str.replace(', midnight', '').strip()
+
+    check_in_date = datetime.strptime(check_in_str, "%B %d, %Y").date()
+    check_out_date = datetime.strptime(check_out_str, "%B %d, %Y").date()
     
-    check_in_str = check_in_str.replace('Sept.', 'Sep.')
-    check_out_str = check_out_str.replace('Sept.', 'Sep.')
-
-    check_in_date = datetime.strptime(check_in_str, "%b. %d, %Y").date()
-    check_out_date = datetime.strptime(check_out_str, "%b. %d, %Y").date()
-
     booking = Booking.objects.create(
             user=user,
             check_in_date=check_in_date,
